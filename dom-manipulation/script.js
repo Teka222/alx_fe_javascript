@@ -16,29 +16,31 @@ function loadQuotes() {
   }
 }
 
-// Fetch quotes from the server periodically (simulate fetching from a server)
-function fetchQuotesFromServer() {
-  fetch('https://jsonplaceholder.typicode.com/posts')
-    .then(response => response.json())
-    .then(data => {
-      // Simulate server providing quotes (text is the title, category is "server")
-      const serverQuotes = data.map(post => ({
-        text: post.title,
-        category: "Server"
-      }));
-      
-      // Add server quotes to local storage, avoiding duplicates
-      serverQuotes.forEach(serverQuote => {
-        if (!quotes.some(quote => quote.text === serverQuote.text)) {
-          quotes.push(serverQuote);
-        }
-      });
+// Fetch quotes from the server periodically (using async/await)
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const data = await response.json();
+    
+    // Simulate server providing quotes (text is the title, category is "Server")
+    const serverQuotes = data.map(post => ({
+      text: post.title,
+      category: "Server"
+    }));
 
-      saveQuotes();
-      populateCategories();
-      filterQuotes();
-    })
-    .catch(error => console.error("Error fetching quotes from the server:", error));
+    // Add server quotes to local storage, avoiding duplicates
+    serverQuotes.forEach(serverQuote => {
+      if (!quotes.some(quote => quote.text === serverQuote.text)) {
+        quotes.push(serverQuote);
+      }
+    });
+
+    saveQuotes();
+    populateCategories();
+    filterQuotes();
+  } catch (error) {
+    console.error("Error fetching quotes from the server:", error);
+  }
 }
 
 // Sync local data with the server every 30 seconds
@@ -62,11 +64,6 @@ function resolveConflicts(serverData) {
     populateCategories();
     filterQuotes();
   }
-}
-
-// Manually resolve conflicts (optional for more advanced use case)
-function manuallyResolveConflicts(conflicts) {
-  // This can involve creating a UI to display conflicting quotes and allowing the user to choose which one to keep
 }
 
 // Load quotes, populate categories, and set up syncing with server
