@@ -28,7 +28,10 @@ async function fetchQuotesFromServer() {
       category: "Server"
     }));
 
-    // Add server quotes to local storage, avoiding duplicates
+    // Check for conflicts and resolve them
+    resolveConflicts(serverQuotes);
+
+    // Update local storage with server quotes
     serverQuotes.forEach(serverQuote => {
       if (!quotes.some(quote => quote.text === serverQuote.text)) {
         quotes.push(serverQuote);
@@ -61,6 +64,12 @@ async function postQuoteToServer(quote) {
   }
 }
 
+// Sync local data with the server and resolve conflicts
+async function syncQuotes() {
+  await fetchQuotesFromServer(); // Fetch latest quotes from server
+  // Additional logic for syncing can be implemented here if needed
+}
+
 // Add a new quote locally and sync with server
 function addQuote() {
   const newQuoteText = document.getElementById('newQuoteText').value;
@@ -88,7 +97,7 @@ function addQuote() {
 
 // Sync local data with the server every 30 seconds
 function syncWithServer() {
-  setInterval(fetchQuotesFromServer, 30000); // Fetch every 30 seconds
+  setInterval(syncQuotes, 30000); // Sync every 30 seconds
 }
 
 // Load quotes, populate categories, and set up syncing with server
@@ -98,5 +107,21 @@ window.onload = function() {
   filterQuotes();
   syncWithServer(); // Start syncing with the server
 };
+
+// Conflict resolution strategy: server data takes precedence
+function resolveConflicts(serverData) {
+  const conflicts = serverData.filter(serverQuote => quotes.some(localQuote => localQuote.text === serverQuote.text && localQuote.category !== serverQuote.category));
+  
+  if (conflicts.length > 0) {
+    alert('Conflict detected! Server data will take precedence.');
+    conflicts.forEach(conflict => {
+      const localQuoteIndex = quotes.findIndex(quote => quote.text === conflict.text);
+      quotes[localQuoteIndex] = conflict;
+    });
+    saveQuotes();
+    populateCategories();
+    filterQuotes();
+  }
+}
 
 // Other existing functions like populateCategories, filterQuotes, etc.
