@@ -41,6 +41,9 @@ async function fetchQuotesFromServer() {
     saveQuotes();
     populateCategories();
     filterQuotes();
+
+    // Notify the user that quotes have been synced
+    alert('Quotes synced with server!');
   } catch (error) {
     console.error("Error fetching quotes from the server:", error);
   }
