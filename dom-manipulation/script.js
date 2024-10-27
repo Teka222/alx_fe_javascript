@@ -17,6 +17,13 @@ function loadQuotes() {
   }
 }
 
+// Show a random quote
+function showRandomQuote() {
+  const randomIndex = Math.floor(Math.random() * quotes.length);
+  const quote = quotes[randomIndex];
+  document.getElementById("quoteDisplay").innerHTML = `${quote.text} - <strong>${quote.category}</strong>`;
+}
+
 // Populate category filter dropdown
 function populateCategories() {
   const categories = Array.from(new Set(quotes.map(quote => quote.category)));
@@ -35,6 +42,8 @@ function populateCategories() {
   if (lastSelectedCategory) {
     categoryFilter.value = lastSelectedCategory;
     filterQuotes();
+  } else {
+    showRandomQuote();  // Display a random quote on initial load
   }
 }
 
@@ -47,7 +56,7 @@ function filterQuotes() {
 
   const filteredQuotes = selectedCategory === 'all' ? quotes : quotes.filter(quote => quote.category === selectedCategory);
   
-  // Display the first filtered quote
+  // Display a random quote from the filtered quotes
   if (filteredQuotes.length > 0) {
     const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
     const quote = filteredQuotes[randomIndex];
@@ -107,5 +116,5 @@ function importFromJsonFile(event) {
 window.onload = function() {
   loadQuotes();
   populateCategories();
-  document.getElementById("newQuote").addEventListener("click", filterQuotes);
+  document.getElementById("newQuote").addEventListener("click", showRandomQuote); // Show a new random quote on button click
 };
