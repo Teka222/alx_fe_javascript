@@ -66,6 +66,17 @@ function filterQuotes() {
   }
 }
 
+// Create and display the Add Quote form
+function createAddQuoteForm() {
+  const addQuoteContainer = document.getElementById("addQuoteContainer");
+  
+  addQuoteContainer.innerHTML = `
+    <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+    <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+    <button onclick="addQuote()">Add Quote</button>
+  `;
+}
+
 // Add a new quote and update categories
 function addQuote() {
   const newQuoteText = document.getElementById("newQuoteText").value;
@@ -116,5 +127,6 @@ function importFromJsonFile(event) {
 window.onload = function() {
   loadQuotes();
   populateCategories();
+  createAddQuoteForm();  // Display the add quote form on page load
   document.getElementById("newQuote").addEventListener("click", showRandomQuote); // Show a new random quote on button click
 };
