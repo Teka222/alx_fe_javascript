@@ -17,8 +17,8 @@ function loadQuotes() {
   }
 }
 
-// Display a random quote
-function displayRandomQuote() {
+// Show a random quote
+function showRandomQuote() {
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quoteDisplay = document.getElementById('quoteDisplay');
   quoteDisplay.innerText = quotes[randomIndex].text;
